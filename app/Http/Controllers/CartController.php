@@ -12,7 +12,6 @@ class CartController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        Stripe::setApiKey(env('STRIPE_SECRET'));
     }
 
     public function index()
@@ -79,6 +78,8 @@ class CartController extends Controller
     public function processPayment(Request $request)
     {
         $cart = session('cart', []);
+        
+        Stripe::setApiKey(config('stripe.secret'));
         
         $lineItems = [];
         foreach ($cart as $item) {
