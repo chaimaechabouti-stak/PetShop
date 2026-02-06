@@ -79,7 +79,14 @@ class CartController extends Controller
     {
         $cart = session('cart', []);
         
-        Stripe::setApiKey(config('stripe.secret'));
+        // Essayer plusieurs méthodes pour récupérer la clé Stripe
+        $stripeSecret = $_ENV['STRIPE_SECRET'] ?? getenv('STRIPE_SECRET') ?? config('stripe.secret') ?? env('STRIPE_SECRET');
+        
+        if (!$stripeSecret) {
+            return redirect()->route('cart.index')->with('error', 'Configuration Stripe manquante. Contactez l\'administrateur.');
+        }
+        
+        Stripe::setApiKey($stripeSecret);
         
         $lineItems = [];
         foreach ($cart as $item) {
