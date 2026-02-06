@@ -15,10 +15,13 @@
                 <h3>Résumé de la commande</h3>
                 
                 @foreach($cart as $item)
+                    @php
+                        $product = is_array($item['product']) ? (object)$item['product'] : $item['product'];
+                    @endphp
                     <div class="order-item">
-                        <span class="item-name">{{ $item['product']->nom }}</span>
+                        <span class="item-name">{{ $product->nom }}</span>
                         <span class="item-quantity">x{{ $item['quantity'] }}</span>
-                        <span class="item-price">{{ number_format($item['product']->prix * $item['quantity'], 2) }}DH</span>
+                        <span class="item-price">{{ number_format($product->prix * $item['quantity'], 2) }}DH</span>
                     </div>
                 @endforeach
                 

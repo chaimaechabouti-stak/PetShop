@@ -19,18 +19,21 @@
         @else
             <div class="cart-items">
                 @foreach($cart as $id => $item)
+                    @php
+                        $product = is_array($item['product']) ? (object)$item['product'] : $item['product'];
+                    @endphp
                     <div class="cart-item">
                         <div class="item-image">
-                            @if($item['product']->image_url)
-                                <img src="{{ $item['product']->image_url }}" alt="{{ $item['product']->nom }}">
+                            @if($product->image_url)
+                                <img src="{{ $product->image_url }}" alt="{{ $product->nom }}">
                             @else
                                 <div class="no-image"><i class="fas fa-paw"></i></div>
                             @endif
                         </div>
                         
                         <div class="item-details">
-                            <h4>{{ $item['product']->nom }}</h4>
-                            <p class="price">{{ number_format($item['product']->prix, 2) }}DH</p>
+                            <h4>{{ $product->nom }}</h4>
+                            <p class="price">{{ number_format($product->prix, 2) }}DH</p>
                         </div>
                         
                         <div class="item-quantity">
@@ -42,7 +45,7 @@
                         </div>
                         
                         <div class="item-total">
-                            {{ number_format($item['product']->prix * $item['quantity'], 2) }}DH
+                            {{ number_format($product->prix * $item['quantity'], 2) }}DH
                         </div>
                         
                         <div class="item-actions">
