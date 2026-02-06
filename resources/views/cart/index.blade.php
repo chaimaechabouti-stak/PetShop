@@ -10,6 +10,18 @@
 
 <section class="cart-content">
     <div class="container">
+        @if(session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+        @endif
+        
+        @if(session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
+        
         @if(empty($cart))
             <div class="empty-cart">
                 <i class="fas fa-shopping-cart"></i>
@@ -153,6 +165,24 @@
 .btn-danger {
     background: #dc3545;
     color: white;
+}
+
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+}
+
+.alert-danger {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.alert-success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
 }
 </style>
 @endsection
