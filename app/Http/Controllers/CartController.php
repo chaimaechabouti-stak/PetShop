@@ -6,6 +6,7 @@ use App\Models\Produit;
 use Illuminate\Http\Request;
 use Stripe\Stripe;
 use Stripe\Checkout\Session;
+use Illuminate\Support\Facades\Cookie;
 
 class CartController extends Controller
 {
@@ -17,7 +18,7 @@ class CartController extends Controller
 
     public function index()
     {
-        $cart = session()->get('cart', []);
+        $cart = $this->getCart();
         $total = $this->calculateTotal($cart);
         
         return view('cart.index', compact('cart', 'total'));
@@ -26,28 +27,28 @@ class CartController extends Controller
     public function add(Request $request, $id)
     {
         $produit = Produit::findOrFail($id);
-        $cart = session()->get('cart', []);
+        $cart = $this->getCart();
         
         if (isset($cart[$id])) {
             $cart[$id]['quantity']++;
         } else {
             $cart[$id] = [
-                'product' => $produit,
+                'product' => $produit->toArray(),
                 'quantity' => 1
             ];
         }
         
-        session()->put('cart', $cart);
+        $this->saveCart($cart);
         return redirect()->back()->with('success', 'Produit ajouté au panier');
     }
 
     public function update(Request $request, $id)
     {
-        $cart = session()->get('cart', []);
+        $cart = $this->getCart();
         
         if (isset($cart[$id])) {
             $cart[$id]['quantity'] = $request->quantity;
-            session()->put('cart', $cart);
+            $this->saveCart($cart);
         }
         
         return redirect()->route('cart.index');
@@ -55,22 +56,22 @@ class CartController extends Controller
 
     public function remove($id)
     {
-        $cart = session()->get('cart', []);
+        $cart = $this->getCart();
         unset($cart[$id]);
-        session()->put('cart', $cart);
+        $this->saveCart($cart);
         
         return redirect()->route('cart.index');
     }
 
     public function clear()
     {
-        session()->forget('cart');
+        Cookie::queue(Cookie::forget('cart'));
         return redirect()->route('cart.index');
     }
 
     public function checkout()
     {
-        $cart = session()->get('cart', []);
+        $cart = $this->getCart();
         $total = $this->calculateTotal($cart);
         
         return view('cart.checkout', compact('cart', 'total'));
@@ -78,18 +79,19 @@ class CartController extends Controller
 
     public function processPayment(Request $request)
     {
-        $cart = session()->get('cart', []);
+        $cart = $this->getCart();
         $total = $this->calculateTotal($cart);
         
         $lineItems = [];
         foreach ($cart as $item) {
+            $product = is_array($item['product']) ? (object)$item['product'] : $item['product'];
             $lineItems[] = [
                 'price_data' => [
                     'currency' => 'eur',
                     'product_data' => [
-                        'name' => $item['product']->nom,
+                        'name' => $product->nom,
                     ],
-                    'unit_amount' => $item['product']->prix * 100,
+                    'unit_amount' => $product->prix * 100,
                 ],
                 'quantity' => $item['quantity'],
             ];
@@ -108,7 +110,7 @@ class CartController extends Controller
 
     public function success()
     {
-        session()->forget('cart');
+        Cookie::queue(Cookie::forget('cart'));
         return view('cart.success');
     }
 
@@ -117,11 +119,23 @@ class CartController extends Controller
         return view('cart.cancel');
     }
 
+    private function getCart()
+    {
+        $cart = request()->cookie('cart');
+        return $cart ? json_decode($cart, true) : [];
+    }
+
+    private function saveCart($cart)
+    {
+        Cookie::queue('cart', json_encode($cart), 60 * 24 * 7); // 7 jours
+    }
+
     private function calculateTotal($cart)
     {
         $total = 0;
         foreach ($cart as $item) {
-            $total += $item['product']->prix * $item['quantity'];
+            $product = is_array($item['product']) ? (object)$item['product'] : $item['product'];
+            $total += $product->prix * $item['quantity'];
         }
         return $total;
     }
