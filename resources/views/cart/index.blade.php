@@ -24,7 +24,7 @@
                     @endphp
                     <div class="cart-item">
                         <div class="item-image">
-                            @if($product->image_url)
+                            @if(isset($product->image_url) && $product->image_url)
                                 <img src="{{ $product->image_url }}" alt="{{ $product->nom }}">
                             @else
                                 <div class="no-image"><i class="fas fa-paw"></i></div>

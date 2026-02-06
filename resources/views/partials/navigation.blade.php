@@ -40,7 +40,7 @@
             @else
                 <a href="{{ route('cart.index') }}" class="cart-link">
                     <i class="fas fa-shopping-cart"></i>
-                    <span class="cart-count">{{ request()->cookie('cart') ? count(json_decode(request()->cookie('cart'), true)) : 0 }}</span>
+                    <span class="cart-count">{{ session('cart') ? count(session('cart')) : 0 }}</span>
                 </a>
                 
                 <div class="user-menu dropdown">

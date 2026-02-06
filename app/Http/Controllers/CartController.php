@@ -6,7 +6,6 @@ use App\Models\Produit;
 use Illuminate\Http\Request;
 use Stripe\Stripe;
 use Stripe\Checkout\Session;
-use Illuminate\Support\Facades\Cookie;
 
 class CartController extends Controller
 {
@@ -18,7 +17,7 @@ class CartController extends Controller
 
     public function index()
     {
-        $cart = $this->getCart();
+        $cart = session('cart', []);
         $total = $this->calculateTotal($cart);
         
         return view('cart.index', compact('cart', 'total'));
@@ -27,7 +26,7 @@ class CartController extends Controller
     public function add(Request $request, $id)
     {
         $produit = Produit::findOrFail($id);
-        $cart = $this->getCart();
+        $cart = session('cart', []);
         
         if (isset($cart[$id])) {
             $cart[$id]['quantity']++;
@@ -38,17 +37,17 @@ class CartController extends Controller
             ];
         }
         
-        $this->saveCart($cart);
+        session(['cart' => $cart]);
         return redirect()->back()->with('success', 'Produit ajouté au panier');
     }
 
     public function update(Request $request, $id)
     {
-        $cart = $this->getCart();
+        $cart = session('cart', []);
         
         if (isset($cart[$id])) {
             $cart[$id]['quantity'] = $request->quantity;
-            $this->saveCart($cart);
+            session(['cart' => $cart]);
         }
         
         return redirect()->route('cart.index');
@@ -56,22 +55,22 @@ class CartController extends Controller
 
     public function remove($id)
     {
-        $cart = $this->getCart();
+        $cart = session('cart', []);
         unset($cart[$id]);
-        $this->saveCart($cart);
+        session(['cart' => $cart]);
         
         return redirect()->route('cart.index');
     }
 
     public function clear()
     {
-        Cookie::queue(Cookie::forget('cart'));
+        session()->forget('cart');
         return redirect()->route('cart.index');
     }
 
     public function checkout()
     {
-        $cart = $this->getCart();
+        $cart = session('cart', []);
         $total = $this->calculateTotal($cart);
         
         return view('cart.checkout', compact('cart', 'total'));
@@ -79,8 +78,7 @@ class CartController extends Controller
 
     public function processPayment(Request $request)
     {
-        $cart = $this->getCart();
-        $total = $this->calculateTotal($cart);
+        $cart = session('cart', []);
         
         $lineItems = [];
         foreach ($cart as $item) {
@@ -110,24 +108,13 @@ class CartController extends Controller
 
     public function success()
     {
-        Cookie::queue(Cookie::forget('cart'));
+        session()->forget('cart');
         return view('cart.success');
     }
 
     public function cancel()
     {
         return view('cart.cancel');
-    }
-
-    private function getCart()
-    {
-        $cart = request()->cookie('cart');
-        return $cart ? json_decode($cart, true) : [];
-    }
-
-    private function saveCart($cart)
-    {
-        Cookie::queue('cart', json_encode($cart), 60 * 24 * 7); // 7 jours
     }
 
     private function calculateTotal($cart)
