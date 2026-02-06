@@ -38,6 +38,11 @@
                 <a href="{{ route('login') }}" class="btn-outline">Connexion</a>
                 <a href="{{ route('register') }}" class="btn-primary">Inscription</a>
             @else
+                <a href="{{ route('cart.index') }}" class="cart-link">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count">{{ session('cart') ? count(session('cart')) : 0 }}</span>
+                </a>
+                
                 <div class="user-menu dropdown">
                     <a href="#" class="dropdown-toggle user-info">
                         <i class="fas fa-user-circle"></i>
@@ -45,6 +50,7 @@
                         <i class="fas fa-chevron-down"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-right">
+                        <li><a href="{{ route('cart.index') }}"><i class="fas fa-shopping-cart"></i> Mon Panier</a></li>
                         <li><a href="{{ route('produits.soldes') }}"><i class="fas fa-tags"></i> Produits en Solde</a></li>
                         @if(Auth::user()->email === 'admin@petshop.com')
                             <li><a href="{{ route('dashboard') }}"><i class="fas fa-tachometer-alt"></i> Dashboard Admin</a></li>
@@ -63,6 +69,35 @@
                 </div>
             @endguest
         </div>
+        
+        <style>
+        .cart-link {
+            position: relative;
+            color: #4CAF50;
+            font-size: 1.2em;
+            margin-right: 15px;
+            text-decoration: none;
+        }
+        
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #dc3545;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 0.8em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .cart-link:hover {
+            color: #45a049;
+        }
+        </style>
         
         <div class="mobile-menu-toggle">
             <i class="fas fa-bars"></i>

@@ -28,6 +28,20 @@ Route::get('/soldes', [DashboardController::class, 'soldes'])->name('produits.so
 Route::get('/produit/{id}/email', [ProduitController::class, 'email'])->name('produits.email');
 Route::post('/produit/{id}/send-email', [ProduitController::class, 'sendEmail'])->name('produits.sendEmail');
 
+// Routes du panier (authentification requise)
+Route::middleware(['auth'])->group(function () {
+    Route::get('/cart', [\App\Http\Controllers\CartController::class, 'index'])->name('cart.index');
+    Route::post('/cart/add/{id}', [\App\Http\Controllers\CartController::class, 'add'])->name('cart.add');
+    Route::patch('/cart/update/{id}', [\App\Http\Controllers\CartController::class, 'update'])->name('cart.update');
+    Route::delete('/cart/remove/{id}', [\App\Http\Controllers\CartController::class, 'remove'])->name('cart.remove');
+    Route::delete('/cart/clear', [\App\Http\Controllers\CartController::class, 'clear'])->name('cart.clear');
+    
+    Route::get('/checkout', [\App\Http\Controllers\CartController::class, 'checkout'])->name('checkout');
+    Route::post('/payment/process', [\App\Http\Controllers\CartController::class, 'processPayment'])->name('payment.process');
+    Route::get('/payment/success', [\App\Http\Controllers\CartController::class, 'success'])->name('payment.success');
+    Route::get('/payment/cancel', [\App\Http\Controllers\CartController::class, 'cancel'])->name('payment.cancel');
+});
+
 // Routes protégées par authentification (admin seulement)
 Route::middleware(['auth', 'admin'])->group(function () {
     // Dashboard admin

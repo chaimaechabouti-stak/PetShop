@@ -64,10 +64,20 @@
                             <input type="number" value="1" min="1" max="{{ $produit->quantite }}" class="qty-input">
                             <button class="qty-btn plus"><i class="fas fa-plus"></i></button>
                         </div>
-                        <button class="btn-primary add-to-cart-btn" data-product-id="{{ $produit->id }}" 
-                                {{ !$produit->en_stock || $produit->quantite <= 0 ? 'disabled' : '' }}>
-                            <i class="fas fa-cart-plus"></i> Ajouter au panier
-                        </button>
+                        @auth
+                            <form action="{{ route('cart.add', $produit->id) }}" method="POST" style="display: inline;">
+                                @csrf
+                                <input type="hidden" name="quantity" value="1">
+                                <button type="submit" class="btn-primary" 
+                                        {{ !$produit->en_stock || $produit->quantite <= 0 ? 'disabled' : '' }}>
+                                    <i class="fas fa-cart-plus"></i> Ajouter au panier
+                                </button>
+                            </form>
+                        @else
+                            <a href="{{ route('login') }}" class="btn-primary">
+                                <i class="fas fa-sign-in-alt"></i> Se connecter pour acheter
+                            </a>
+                        @endauth
                         <button class="btn-secondary">
                             <i class="fas fa-heart"></i> Ajouter aux favoris
                         </button>
