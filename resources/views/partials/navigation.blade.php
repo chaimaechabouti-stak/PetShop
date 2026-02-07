@@ -40,7 +40,11 @@
             @else
                 <a href="{{ route('cart.index') }}" class="cart-link">
                     <i class="fas fa-shopping-cart"></i>
-                    <span class="cart-count">{{ session('cart') ? count(session('cart')) : 0 }}</span>
+                    @php
+                        $cart = session('cart', []);
+                        $totalItems = array_sum(array_column($cart, 'quantity'));
+                    @endphp
+                    <span class="cart-count">{{ $totalItems }}</span>
                 </a>
                 
                 <div class="user-menu dropdown">

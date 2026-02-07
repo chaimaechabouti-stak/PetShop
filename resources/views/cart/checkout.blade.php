@@ -10,6 +10,12 @@
 
 <section class="checkout-content">
     <div class="container">
+        @if(session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+        @endif
+        
         <div class="checkout-grid">
             <div class="order-summary">
                 <h3>Résumé de la commande</h3>
@@ -113,6 +119,18 @@
 .back-to-cart {
     text-align: center;
     margin-top: 30px;
+}
+
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+}
+
+.alert-danger {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
 }
 
 .btn-secondary {

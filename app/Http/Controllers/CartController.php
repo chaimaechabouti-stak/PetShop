@@ -83,25 +83,10 @@ class CartController extends Controller
             return redirect()->route('cart.index')->with('error', 'Votre panier est vide.');
         }
         
-        // Essayer plusieurs noms de variables pour Vercel et local
-        $stripeSecret = $_ENV['STRIPE_SECRET'] 
-            ?? $_ENV['STRIPE_SECRET_KEY'] 
-            ?? getenv('STRIPE_SECRET') 
-            ?? getenv('STRIPE_SECRET_KEY') 
-            ?? config('stripe.secret') 
-            ?? env('STRIPE_SECRET')
-            ?? env('STRIPE_SECRET_KEY');
-        
-        // Dernière tentative: lire directement .env en local
-        if (!$stripeSecret && file_exists(base_path('.env'))) {
-            $envContent = file_get_contents(base_path('.env'));
-            if (preg_match('/STRIPE_SECRET(?:_KEY)?=(.+)/', $envContent, $matches)) {
-                $stripeSecret = trim($matches[1]);
-            }
-        }
+        $stripeSecret = env('STRIPE_SECRET_KEY');
         
         if (!$stripeSecret) {
-            return redirect()->route('cart.index')->with('error', 'Configuration Stripe manquante. Vérifiez les variables d\'environnement sur Vercel.');
+            return redirect()->route('cart.index')->with('error', 'Configuration Stripe manquante.');
         }
         
         try {
