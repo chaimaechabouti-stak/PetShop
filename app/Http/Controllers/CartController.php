@@ -83,17 +83,20 @@ class CartController extends Controller
             return redirect()->route('cart.index')->with('error', 'Votre panier est vide.');
         }
         
-        // Essayer plusieurs méthodes pour récupérer la clé Stripe
-        $stripeSecret = $_ENV['STRIPE_SECRET'] ?? getenv('STRIPE_SECRET') ?? config('stripe.secret') ?? env('STRIPE_SECRET');
+        // Essayer plusieurs noms de variables pour Vercel et local
+        $stripeSecret = $_ENV['STRIPE_SECRET'] 
+            ?? $_ENV['STRIPE_SECRET_KEY'] 
+            ?? getenv('STRIPE_SECRET') 
+            ?? getenv('STRIPE_SECRET_KEY') 
+            ?? config('stripe.secret') 
+            ?? env('STRIPE_SECRET')
+            ?? env('STRIPE_SECRET_KEY');
         
-        // Debug: afficher quelle méthode fonctionne
-        if (!$stripeSecret) {
-            // Dernière tentative: utiliser directement depuis .env si en local
-            if (file_exists(base_path('.env'))) {
-                $envContent = file_get_contents(base_path('.env'));
-                if (preg_match('/STRIPE_SECRET=(.+)/', $envContent, $matches)) {
-                    $stripeSecret = trim($matches[1]);
-                }
+        // Dernière tentative: lire directement .env en local
+        if (!$stripeSecret && file_exists(base_path('.env'))) {
+            $envContent = file_get_contents(base_path('.env'));
+            if (preg_match('/STRIPE_SECRET(?:_KEY)?=(.+)/', $envContent, $matches)) {
+                $stripeSecret = trim($matches[1]);
             }
         }
         
