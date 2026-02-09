@@ -7,6 +7,9 @@ use App\Http\Controllers\ProductResourceController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\DashboardController;
 
+// Changement de langue
+Route::get('/lang/{locale}', [\App\Http\Controllers\LanguageController::class, 'switch'])->name('lang.switch');
+
 // Page d'accueil publique
 Route::get('/', HomeController::class)->name('home');
 

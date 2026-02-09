@@ -2486,3 +2486,65 @@ a {
         display: none;
     }
 }
+
+
+/* ===== Hero & Category Images ===== */
+.pet-illustration {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.pet-img {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 50%;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    transition: transform 0.3s ease;
+}
+
+.pet-img:hover {
+    transform: scale(1.1);
+}
+
+.category-img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+}
+
+.category-card:hover .category-img {
+    transform: scale(1.05);
+}
+
+.category-icon {
+    margin-bottom: 15px;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+@media (max-width: 768px) {
+    .pet-img {
+        width: 150px;
+        height: 150px;
+    }
+    
+    .category-img {
+        height: 120px;
+    }
+}
+
+.category-logo {
+    width: 120px;
+    height: 120px;
+    transition: transform 0.3s ease;
+}
+
+.category-card:hover .category-logo {
+    transform: scale(1.1);
+}

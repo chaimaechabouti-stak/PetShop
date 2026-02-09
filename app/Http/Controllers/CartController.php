@@ -35,7 +35,6 @@ class CartController extends Controller
                 'quantity' => 1
             ];
         }
-        
         session(['cart' => $cart]);
         return redirect()->back()->with('success', 'Produit ajouté au panier');
     }

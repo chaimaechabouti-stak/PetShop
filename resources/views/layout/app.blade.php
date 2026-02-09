@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() == 'ar' ? 'rtl' : 'ltr' }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,9 +15,6 @@
 <body>
     <!-- Header -->
     @include('partials.header')
-    
-    <!-- Navigation -->
-    @include('partials.navigation')
     
     <!-- Main Content -->
     <main class="main-content">

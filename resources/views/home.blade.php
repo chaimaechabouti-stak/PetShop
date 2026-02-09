@@ -5,15 +5,15 @@
     <section class="hero">
         <div class="container">
             <div class="hero-content">
-                <h2>PetShop - Animalerie en ligne</h2>
-                <p>Les meilleurs produits pour le bien-être de vos animaux de compagnie</p>
+                <h2>{{ __('homepage.hero_title') }}</h2>
+                <p>{{ __('homepage.hero_subtitle') }}</p>
                 <div class="hero-actions">
                     
                 </div>
             </div>
             <div class="hero-image">
                 <div class="pet-illustration">
-                    <i class="fas fa-dog"></i>
+                     <i class="fas fa-dog"></i>
                     <i class="fas fa-cat"></i>
                     <i class="fas fa-paw"></i>
                 </div>
@@ -24,7 +24,7 @@
     <!-- Catégories Section -->
     <section class="categories">
         <div class="container">
-            <h2 class="section-title">Nos Catégories</h2>
+            <h2 class="section-title">{{ __('homepage.our_categories') }}</h2>
             <div class="categories-grid">
                 @if(isset($categories))
                     @foreach($categories as $categorie)
@@ -32,21 +32,21 @@
                            class="category-card">
                             <div class="category-icon">
                                 @if($categorie->categorie == 'chiens')
-                                    <i class="fas fa-dog"></i>
+                                    <i class="fas fa-dog" style="font-size: 4rem; color: var(--primary-color);"></i>
                                 @elseif($categorie->categorie == 'chats')
-                                    <i class="fas fa-cat"></i>
+                                    <i class="fas fa-cat" style="font-size: 4rem; color: var(--primary-color);"></i>
                                 @elseif($categorie->categorie == 'oiseaux')
-                                    <i class="fas fa-dove"></i>
+                                    <i class="fas fa-dove" style="font-size: 4rem; color: var(--primary-color);"></i>
                                 @elseif($categorie->categorie == 'rongeurs')
-                                    <i class="fas fa-paw"></i>
+                                    <i class="fas fa-paw" style="font-size: 4rem; color: var(--primary-color);"></i>
                                 @elseif($categorie->categorie == 'poissons')
-                                    <i class="fas fa-fish"></i>
+                                    <i class="fas fa-fish" style="font-size: 4rem; color: var(--primary-color);"></i>
                                 @else
-                                    <i class="fas fa-paw"></i>
+                                    <i class="fas fa-paw" style="font-size: 4rem; color: var(--primary-color);"></i>
                                 @endif
                             </div>
                             <h3>{{ ucfirst($categorie->categorie) }}</h3>
-                            <p>{{ App\Models\Produit::where('categorie', $categorie->categorie)->count() }} produits</p>
+                            <p>{{ App\Models\Produit::where('categorie', $categorie->categorie)->count() }} {{ __('homepage.products_count') }}</p>
                         </a>
                     @endforeach
                 @endif
@@ -57,14 +57,14 @@
     <!-- Nouveaux Produits -->
     <section class="new-products">
         <div class="container">
-            <h2 class="section-title">Tous nos Produits</h2>
+            <h2 class="section-title">{{ __('homepage.all_products') }}</h2>
             
             {{-- Information sur la pagination --}}
             <div class="pagination-top">
                 @if($produits->total() > 0)
                     <p class="showing-results">
-                        Affichage <strong>{{ $produits->firstItem() }}</strong>-<strong>{{ $produits->lastItem() }}</strong> 
-                        sur <strong>{{ $produits->total() }}</strong> produits
+                        {{ __('homepage.showing_results') }} <strong>{{ $produits->firstItem() }}</strong>-<strong>{{ $produits->lastItem() }}</strong> 
+                        {{ __('homepage.on') }} <strong>{{ $produits->total() }}</strong> {{ __('homepage.products') }}
                     </p>
                 @endif
             </div>
@@ -99,14 +99,14 @@
                             <p class="product-description">{{ Str::limit($produit->description, 80) }}</p>
                             <div class="product-stock">
                                 @if($produit->en_stock && $produit->quantite > 0)
-                                    <span class="in-stock"><i class="fas fa-check-circle"></i> En stock ({{ $produit->quantite }})</span>
+                                    <span class="in-stock"><i class="fas fa-check-circle"></i> {{ __('homepage.in_stock') }} ({{ $produit->quantite }})</span>
                                 @else
-                                    <span class="out-of-stock"><i class="fas fa-times-circle"></i> Rupture</span>
+                                    <span class="out-of-stock"><i class="fas fa-times-circle"></i> {{ __('homepage.out_of_stock') }}</span>
                                 @endif
                             </div>
                             <p class="product-price">{{ number_format($produit->prix, 2, ',', ' ') }}DH</p>
                             <div class="product-actions">
-                                <a href="{{ route('produits.show', ['id' => $produit->id]) }}" class="btn-secondary">Voir détails</a>
+                                <a href="{{ route('produits.show', ['id' => $produit->id]) }}" class="btn-secondary">{{ __('homepage.view_details') }}</a>
                             </div>
                         </div>
                     </div>
@@ -221,6 +221,39 @@
 .btn-large {
     padding: 15px 40px;
     font-size: 1.1rem;
+}
+
+.category-img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+    transition: transform 0.3s;
+}
+
+.category-card:hover .category-img {
+    transform: scale(1.05);
+}
+
+.pet-illustration {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.pet-img {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 50%;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    transition: transform 0.3s;
+}
+
+.pet-img:hover {
+    transform: scale(1.1);
 }
 </style>
 @endpush
